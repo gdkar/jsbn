@@ -30,7 +30,7 @@ function pkcs1pad2(s,n) {
     alert("Message too long for RSA");
     return null;
   }
-  var ba = new Array();
+  var ba = [];
   var i = s.length - 1;
   while(i >= 0 && n > 0) {
     var c = s.charCodeAt(i--);
@@ -49,10 +49,10 @@ function pkcs1pad2(s,n) {
   }
   ba[--n] = 0;
   var rng = new SecureRandom();
-  var x = new Array();
+  var x = [];
   while(n > 2) { // random non-zero pad
     x[0] = 0;
-    while(x[0] == 0) rng.nextBytes(x);
+    while(x[0] === 0) rng.nextBytes(x);
     ba[--n] = x[0];
   }
   ba[--n] = 2;
@@ -94,7 +94,7 @@ function RSAEncrypt(text) {
   var c = this.doPublic(m);
   if(c == null) return null;
   var h = c.toString(16);
-  if((h.length & 1) == 0) return h; else return "0" + h;
+  if((h.length & 1) === 0) return h; else return "0" + h;
 }
 
 // Return the PKCS#1 RSA encryption of "text" as a Base64-encoded string

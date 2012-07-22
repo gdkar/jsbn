@@ -11,8 +11,8 @@
  * Configurable variables. You may need to tweak these to be compatible with
  * the server-side, but the defaults work in most cases.
  */
-var hexcase = 0;  /* hex output format. 0 - lowercase; 1 - uppercase        */
-var b64pad  = ""; /* base-64 pad character. "=" for strict RFC compliance   */
+var hexcase = 1;  /* hex output format. 0 - lowercase; 1 - uppercase        */
+var b64pad  = '='; /* base-64 pad character. "=" for strict RFC compliance   */
 
 /*
  * These are the functions you'll usually want to call
@@ -33,7 +33,7 @@ function any_hmac_sha1(k, d, e)
  */
 function sha1_vm_test()
 {
-  return hex_sha1("abc").toLowerCase() == "a9993e364706816aba3e25717850c26c9cd0d89d";
+  return hex_sha1("abc").toLowerCase() === "a9993e364706816aba3e25717850c26c9cd0d89d";
 }
 
 /*
@@ -52,7 +52,7 @@ function rstr_hmac_sha1(key, data)
   var bkey = rstr2binb(key);
   if(bkey.length > 16) bkey = binb_sha1(bkey, key.length * 8);
 
-  var ipad = Array(16), opad = Array(16);
+  var ipad = new Array(16), opad = new Array(16);
   for(var i = 0; i < 16; i++)
   {
     ipad[i] = bkey[i] ^ 0x36363636;
@@ -68,15 +68,13 @@ function rstr_hmac_sha1(key, data)
  */
 function rstr2hex(input)
 {
-  try { hexcase } catch(e) { hexcase=0; }
   var hex_tab = hexcase ? "0123456789ABCDEF" : "0123456789abcdef";
   var output = "";
   var x;
   for(var i = 0; i < input.length; i++)
   {
     x = input.charCodeAt(i);
-    output += hex_tab.charAt((x >>> 4) & 0x0F)
-           +  hex_tab.charAt( x        & 0x0F);
+    output += hex_tab.charAt((x >>> 4) & 0x0F) + hex_tab.charAt(x & 0x0F);
   }
   return output;
 }
@@ -86,16 +84,16 @@ function rstr2hex(input)
  */
 function rstr2b64(input)
 {
-  try { b64pad } catch(e) { b64pad=''; }
+  var i, j;
   var tab = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
   var output = "";
   var len = input.length;
-  for(var i = 0; i < len; i += 3)
+  for(i = 0; i < len; i += 3)
   {
     var triplet = (input.charCodeAt(i) << 16)
                 | (i + 1 < len ? input.charCodeAt(i+1) << 8 : 0)
                 | (i + 2 < len ? input.charCodeAt(i+2)      : 0);
-    for(var j = 0; j < 4; j++)
+    for(j = 0; j < 4; j++)
     {
       if(i * 8 + j * 6 > input.length * 8) output += b64pad;
       else output += tab.charAt((triplet >>> 6*(3-j)) & 0x3F);
@@ -110,11 +108,11 @@ function rstr2b64(input)
 function rstr2any(input, encoding)
 {
   var divisor = encoding.length;
-  var remainders = Array();
+  var remainders = [];
   var i, q, x, quotient;
 
   /* Convert to an array of 16-bit big-endian values, forming the dividend */
-  var dividend = Array(Math.ceil(input.length / 2));
+  var dividend = new Array(Math.ceil(input.length / 2));
   for(i = 0; i < dividend.length; i++)
   {
     dividend[i] = (input.charCodeAt(i * 2) << 8) | input.charCodeAt(i * 2 + 1);
@@ -128,7 +126,7 @@ function rstr2any(input, encoding)
    */
   while(dividend.length > 0)
   {
-    quotient = Array();
+    quotient = [];
     x = 0;
     for(i = 0; i < dividend.length; i++)
     {
@@ -149,7 +147,7 @@ function rstr2any(input, encoding)
 
   /* Append leading zero equivalents */
   var full_length = Math.ceil(input.length * 8 /
-                                    (Math.log(encoding.length) / Math.log(2)))
+                                    (Math.log(encoding.length) / Math.log(2)));
   for(i = output.length; i < full_length; i++)
     output = encoding[0] + output;
 
@@ -223,7 +221,7 @@ function str2rstr_utf16be(input)
  */
 function rstr2binb(input)
 {
-  var output = Array(input.length >> 2);
+  var output = new Array(input.length >> 2);
   for(var i = 0; i < output.length; i++)
     output[i] = 0;
   for(var i = 0; i < input.length * 8; i += 8)
@@ -251,7 +249,7 @@ function binb_sha1(x, len)
   x[len >> 5] |= 0x80 << (24 - len % 32);
   x[((len + 64 >> 9) << 4) + 15] = len;
 
-  var w = Array(80);
+  var w = new Array(80);
   var a =  1732584193;
   var b = -271733879;
   var c = -1732584194;
@@ -285,8 +283,7 @@ function binb_sha1(x, len)
     d = safe_add(d, oldd);
     e = safe_add(e, olde);
   }
-  return Array(a, b, c, d, e);
-
+  return [a, b, c, d, e];
 }
 
 /*

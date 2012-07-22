@@ -15,7 +15,7 @@ function ECFieldElementFp(q,x) {
 }
 
 function feFpEquals(other) {
-    if(other == this) return true;
+    if(other === this) return true;
     return (this.q.equals(other.q) && this.x.equals(other.x));
 }
 
@@ -91,7 +91,7 @@ function pointFpGetY() {
 }
 
 function pointFpEquals(other) {
-    if(other == this) return true;
+    if(other === this) return true;
     if(this.isInfinity()) return other.isInfinity();
     if(other.isInfinity()) return this.isInfinity();
     var u, v;
@@ -125,7 +125,7 @@ function pointFpAdd(b) {
         if(BigInteger.ZERO.equals(u)) {
             return this.twice(); // this == b, so double
         }
-	return this.curve.getInfinity(); // this = -b, so infinity
+        return this.curve.getInfinity(); // this = -b, so infinity
     }
 
     var THREE = new BigInteger("3");
@@ -151,7 +151,7 @@ function pointFpAdd(b) {
 
 function pointFpTwice() {
     if(this.isInfinity()) return this;
-    if(this.y.toBigInteger().signum() == 0) return this.curve.getInfinity();
+    if(this.y.toBigInteger().signum() === 0) return this.curve.getInfinity();
 
     // TODO: optimized handling of constants
     var THREE = new BigInteger("3");
@@ -182,7 +182,7 @@ function pointFpTwice() {
 // TODO: modularize the multiplication algorithm
 function pointFpMultiply(k) {
     if(this.isInfinity()) return this;
-    if(k.signum() == 0) return this.curve.getInfinity();
+    if(k.signum() === 0) return this.curve.getInfinity();
 
     var e = k;
     var h = e.multiply(new BigInteger("3"));
@@ -192,14 +192,14 @@ function pointFpMultiply(k) {
 
     var i;
     for(i = h.bitLength() - 2; i > 0; --i) {
-	R = R.twice();
+        R = R.twice();
 
-	var hBit = h.testBit(i);
-	var eBit = e.testBit(i);
+        var hBit = h.testBit(i);
+        var eBit = e.testBit(i);
 
-	if (hBit != eBit) {
-	    R = R.add(hBit ? this : neg);
-	}
+        if (hBit !== eBit) {
+            R = R.add(hBit ? this : neg);
+        }
     }
 
     return R;
@@ -270,7 +270,7 @@ function curveFpGetB() {
 }
 
 function curveFpEquals(other) {
-    if(other == this) return true;
+    if(other === this) return true;
     return(this.q.equals(other.q) && this.a.equals(other.a) && this.b.equals(other.b));
 }
 
@@ -286,24 +286,26 @@ function curveFpFromBigInteger(x) {
 function curveFpDecodePointHex(s) {
     switch(parseInt(s.substr(0,2), 16)) { // first byte
     case 0:
-	return this.infinity;
+        return this.infinity;
     case 2:
     case 3:
-	// point compression not supported yet
-	return null;
+        // point compression not supported yet
+        return null;
     case 4:
     case 6:
     case 7:
-	var len = (s.length - 2) / 2;
-	var xHex = s.substr(2, len);
-	var yHex = s.substr(len+2, len);
+        var len = (s.length - 2) / 2;
+        var xHex = s.substr(2, len);
+        var yHex = s.substr(len+2, len);
 
-	return new ECPointFp(this,
-			     this.fromBigInteger(new BigInteger(xHex, 16)),
-			     this.fromBigInteger(new BigInteger(yHex, 16)));
+        return new ECPointFp(
+            this,
+            this.fromBigInteger(new BigInteger(xHex, 16)),
+            this.fromBigInteger(new BigInteger(yHex, 16))
+        );
 
     default: // unsupported
-	return null;
+        return null;
     }
 }
 
