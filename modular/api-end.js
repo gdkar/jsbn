@@ -1,6 +1,8 @@
-
-    BigInteger.fromInt = nbi;
-
+    
+    // Hooks
+    BigInteger.fromInt = nbv;
+    
+    // JSBN API
     return {
         crypto: {
             ec: {
@@ -13,14 +15,20 @@
                 X9ECParameters: X9ECParameters
             },
             hash: {
-                // TODO: Expose hashing functionality
+                hmac: {
+                    sha1: hex_hmac_sha1
+                },
+                sha1: {
+                    fromString: hex_sha1,
+                    fromArray: ba_sha1
+                }
             },
             prng: {
                 Arcfour: Arcfour,
                 SecureRandom: SecureRandom
             },
             rsa: {
-              RSAKey: RSAKey
+                RSAKey: RSAKey
             }
         },
         math: {
