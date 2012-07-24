@@ -445,8 +445,8 @@ var j_lm = ((canary&0xffffff)===0xefcafe);
 function BigInteger(a,b,c) {
   if(a != null)
     if("number" === typeof a) this.fromNumber(a,b,c);
-    else if(b == null && "string" !== typeof a) this.fromString(a,256);
-    else this.fromString(a,b);
+    else if(b == null && "string" !== typeof a) this.fromString(a,256,c);
+    else this.fromString(a,b,c);
 }
 
 // return new, unset BigInteger
@@ -555,8 +555,8 @@ function bnpFromInt(x) {
 // return bigint initialized to value
 function nbv(i) { var r = nbi(); r.fromInt(i); return r; }
 
-// (protected) set from string and radix
-function bnpFromString(s,b) {
+// (protected) set from string, radix and unsigned
+function bnpFromString(s,b,u) {
   var k;
   if(b === 16) k = 4;
   else if(b === 8) k = 3;
@@ -586,7 +586,7 @@ function bnpFromString(s,b) {
     sh += k;
     if(sh >= this.DB) sh -= this.DB;
   }
-  if(k === 8 && (s[0]&0x80) !== 0) {
+  if(!u && k === 8 && (s[0]&0x80) !== 0) {
     this.s = -1;
     if(sh > 0) this[this.t-1] |= ((1<<(this.DB-sh))-1)<<sh;
   }
@@ -1121,6 +1121,45 @@ function bnToByteArray() {
   return r;
 }
 
+// (public) convert to big-endian array
+function bnToArray() {
+  var array = [];
+  var k = 8;
+  var km = (1 << k) - 1;
+  var d = 0;
+  var i = this.t;
+  var p = this.DB - (i * this.DB) % k;
+  var m = false;
+  var c = 0;
+  if(i-- > 0) {
+    if(p < this.DB && (d = this[i] >> p) > 0) {
+      m = true;
+      array.push(d);
+      c++;
+    }
+    while(i >= 0) {
+      if(p < k) {
+        d = (this[i] & ((1 << p) - 1)) << (k - p);
+        d |= this[--i] >> (p += this.DB - k);
+      }else{
+        d = (this[i] >> (p -= k)) & km;
+        if(p <= 0) {
+          p += this.DB;
+          --i;
+        }
+      }
+      if(d > 0) {
+        m = true;
+      }
+      if(m) {
+        array.push(d);
+        c++;
+      }
+    }
+  }
+  return array;
+}
+
 function bnEquals(a) { return(this.compareTo(a)===0); }
 function bnMin(a) { return(this.compareTo(a)<0)?this:a; }
 function bnMax(a) { return(this.compareTo(a)>0)?this:a; }
@@ -1605,6 +1644,7 @@ BigInteger.prototype.byteValue = bnByteValue;
 BigInteger.prototype.shortValue = bnShortValue;
 BigInteger.prototype.signum = bnSigNum;
 BigInteger.prototype.toByteArray = bnToByteArray;
+BigInteger.prototype.toArray = bnToArray;
 BigInteger.prototype.equals = bnEquals;
 BigInteger.prototype.min = bnMin;
 BigInteger.prototype.max = bnMax;
@@ -2178,7 +2218,6 @@ function getSECCurveByName(name) {
  * the server-side, but the defaults work in most cases.
  */
 var hexcase = 1;  /* hex output format. 0 - lowercase; 1 - uppercase        */
-var b64pad  = '='; /* base-64 pad character. "=" for strict RFC compliance   */
 
 /*
  * These are the functions you'll usually want to call
@@ -2406,6 +2445,40 @@ function binb2rstr(input)
   return output;
 }
 
+/**
+ * Converts a byte-array to an array of big-endian words
+ */
+function ba2binb(input)
+{
+  var output = new Array(input.length >> 2);
+  for(var i = 0; i < output.length; i++) {
+    output[i] = 0;
+  }
+  for(var i = 0; i < input.length * 8; i += 8) {
+    output[i>>5] |= (input[i / 8] & 0xFF) << (24 - i % 32);
+  }
+  return output;
+}
+
+/**
+ * Converts an array of big-endian words to a byte-array
+ */
+function binb2ba(input)
+{
+  var output = [];
+  for(var i = 0; i < input.length * 32; i += 8) {
+    output.push((input[i>>5] >>> (24 - i % 32)) & 0xFF);
+  }
+  return output;
+}
+
+/**
+ * Calculates the SHA1 of a byte-array
+ */
+function ba_sha1(ba) {
+  return binb2ba(binb_sha1(ba2binb(ba), ba.length * 8));
+}
+
 /*
  * Calculate the SHA-1 of an array of big-endian words, and a bit length
  */
@@ -2492,9 +2565,11 @@ function bit_rol(num, cnt)
   return (num << cnt) | (num >>> (32 - cnt));
 }
 
-
-    BigInteger.fromInt = nbi;
-
+    
+    // Hooks
+    BigInteger.fromInt = nbv;
+    
+    // JSBN API
     return {
         crypto: {
             ec: {
@@ -2507,14 +2582,20 @@ function bit_rol(num, cnt)
                 X9ECParameters: X9ECParameters
             },
             hash: {
-                // TODO: Expose hashing functionality
+                hmac: {
+                    sha1: hex_hmac_sha1
+                },
+                sha1: {
+                    fromString: hex_sha1,
+                    fromArray: ba_sha1
+                }
             },
             prng: {
                 Arcfour: Arcfour,
                 SecureRandom: SecureRandom
             },
             rsa: {
-              RSAKey: RSAKey
+                RSAKey: RSAKey
             }
         },
         math: {
