@@ -131,6 +131,45 @@ function bnToByteArray() {
   return r;
 }
 
+// (public) convert to big-endian array
+function bnToArray() {
+  var array = [];
+  var k = 8;
+  var km = (1 << k) - 1;
+  var d = 0;
+  var i = this.t;
+  var p = this.DB - (i * this.DB) % k;
+  var m = false;
+  var c = 0;
+  if(i-- > 0) {
+    if(p < this.DB && (d = this[i] >> p) > 0) {
+      m = true;
+      array.push(d);
+      c++;
+    }
+    while(i >= 0) {
+      if(p < k) {
+        d = (this[i] & ((1 << p) - 1)) << (k - p);
+        d |= this[--i] >> (p += this.DB - k);
+      }else{
+        d = (this[i] >> (p -= k)) & km;
+        if(p <= 0) {
+          p += this.DB;
+          --i;
+        }
+      }
+      if(d > 0) {
+        m = true;
+      }
+      if(m) {
+        array.push(d);
+        c++;
+      }
+    }
+  }
+  return array;
+}
+
 function bnEquals(a) { return(this.compareTo(a)===0); }
 function bnMin(a) { return(this.compareTo(a)<0)?this:a; }
 function bnMax(a) { return(this.compareTo(a)>0)?this:a; }
@@ -615,6 +654,7 @@ BigInteger.prototype.byteValue = bnByteValue;
 BigInteger.prototype.shortValue = bnShortValue;
 BigInteger.prototype.signum = bnSigNum;
 BigInteger.prototype.toByteArray = bnToByteArray;
+BigInteger.prototype.toArray = bnToArray;
 BigInteger.prototype.equals = bnEquals;
 BigInteger.prototype.min = bnMin;
 BigInteger.prototype.max = bnMax;
