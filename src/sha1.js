@@ -12,7 +12,6 @@
  * the server-side, but the defaults work in most cases.
  */
 var hexcase = 1;  /* hex output format. 0 - lowercase; 1 - uppercase        */
-var b64pad  = '='; /* base-64 pad character. "=" for strict RFC compliance   */
 
 /*
  * These are the functions you'll usually want to call
@@ -238,6 +237,40 @@ function binb2rstr(input)
   for(var i = 0; i < input.length * 32; i += 8)
     output += String.fromCharCode((input[i>>5] >>> (24 - i % 32)) & 0xFF);
   return output;
+}
+
+/**
+ * Converts a byte-array to an array of big-endian words
+ */
+function ba2binb(input)
+{
+  var output = new Array(input.length >> 2);
+  for(var i = 0; i < output.length; i++) {
+    output[i] = 0;
+  }
+  for(var i = 0; i < input.length * 8; i += 8) {
+    output[i>>5] |= (input[i / 8] & 0xFF) << (24 - i % 32);
+  }
+  return output;
+}
+
+/**
+ * Converts an array of big-endian words to a byte-array
+ */
+function binb2ba(input)
+{
+  var output = [];
+  for(var i = 0; i < input.length * 32; i += 8) {
+    output.push((input[i>>5] >>> (24 - i % 32)) & 0xFF);
+  }
+  return output;
+}
+
+/**
+ * Calculates the SHA1 of a byte-array
+ */
+function ba_sha1(ba) {
+  return binb2ba(binb_sha1(ba2binb(ba), ba.length * 8));
 }
 
 /*
