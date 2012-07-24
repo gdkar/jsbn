@@ -15,8 +15,8 @@ var j_lm = ((canary&0xffffff)===0xefcafe);
 function BigInteger(a,b,c) {
   if(a != null)
     if("number" === typeof a) this.fromNumber(a,b,c);
-    else if(b == null && "string" !== typeof a) this.fromString(a,256);
-    else this.fromString(a,b);
+    else if(b == null && "string" !== typeof a) this.fromString(a,256,c);
+    else this.fromString(a,b,c);
 }
 
 // return new, unset BigInteger
@@ -125,8 +125,8 @@ function bnpFromInt(x) {
 // return bigint initialized to value
 function nbv(i) { var r = nbi(); r.fromInt(i); return r; }
 
-// (protected) set from string and radix
-function bnpFromString(s,b) {
+// (protected) set from string, radix and unsigned
+function bnpFromString(s,b,u) {
   var k;
   if(b === 16) k = 4;
   else if(b === 8) k = 3;
@@ -156,7 +156,7 @@ function bnpFromString(s,b) {
     sh += k;
     if(sh >= this.DB) sh -= this.DB;
   }
-  if(k === 8 && (s[0]&0x80) !== 0) {
+  if(!u && k === 8 && (s[0]&0x80) !== 0) {
     this.s = -1;
     if(sh > 0) this[this.t-1] |= ((1<<(this.DB-sh))-1)<<sh;
   }
