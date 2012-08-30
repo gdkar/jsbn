@@ -11,7 +11,7 @@
  * Configurable variables. You may need to tweak these to be compatible with
  * the server-side, but the defaults work in most cases.
  */
-var hexcase = 1;  /* hex output format. 0 - lowercase; 1 - uppercase        */
+var hexcase = 0;  /* hex output format. 0 - lowercase; 1 - uppercase        */
 
 /*
  * These are the functions you'll usually want to call
@@ -26,14 +26,6 @@ function b64_hmac_sha1(k, d)
   { return rstr2b64(rstr_hmac_sha1(str2rstr_utf8(k), str2rstr_utf8(d))); }
 function any_hmac_sha1(k, d, e)
   { return rstr2any(rstr_hmac_sha1(str2rstr_utf8(k), str2rstr_utf8(d)), e); }
-
-/*
- * Perform a simple self-test to see if the VM is working
- */
-function sha1_vm_test()
-{
-  return hex_sha1("abc").toLowerCase() === "a9993e364706816aba3e25717850c26c9cd0d89d";
-}
 
 /*
  * Calculate the SHA1 of a raw string
@@ -60,6 +52,24 @@ function rstr_hmac_sha1(key, data)
 
   var hash = binb_sha1(ipad.concat(rstr2binb(data)), 512 + data.length * 8);
   return binb2rstr(binb_sha1(opad.concat(hash), 512 + 160));
+}
+
+/**
+ * Calculates the HMAC-SHA1 of a given key and data (both byte-arrays)
+ */
+function ba_hmac_sha1(key, data) {
+  var bkey = ba2binb(key);
+  if(bkey.length > 16) bkey = binb_sha1(bkey, key.length * 8);
+
+  var ipad = new Array(16), opad = new Array(16);
+  for(var i = 0; i < 16; i++)
+  {
+    ipad[i] = bkey[i] ^ 0x36363636;
+    opad[i] = bkey[i] ^ 0x5C5C5C5C;
+  }
+
+  var hash = binb_sha1(ipad.concat(ba2binb(data)), 512 + data.length * 8);
+  return binb2ba(binb_sha1(opad.concat(hash), 512 + 160));
 }
 
 /*
