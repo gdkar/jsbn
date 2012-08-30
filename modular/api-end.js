@@ -16,7 +16,10 @@
             },
             hash: {
                 hmac: {
-                    sha1: hex_hmac_sha1
+                    sha1: {
+                        fromStrings: hex_hmac_sha1,
+                        fromArrays: ba_hmac_sha1
+                    }
                 },
                 sha1: {
                     fromString: hex_sha1,
@@ -24,7 +27,7 @@
                 }
             },
             prng: {
-                Arcfour: Arcfour,
+                ARC4: Arcfour,
                 SecureRandom: SecureRandom
             },
             rsa: {
