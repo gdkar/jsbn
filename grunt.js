@@ -45,6 +45,7 @@ module.exports = function(grunt) {
     lint: {
       files: [
         'grunt.js',
+        'spec/*-test.js',
         'dist/jsbn.js'
       ]
     },
@@ -74,9 +75,10 @@ module.exports = function(grunt) {
     watch: {
       files: [
         'src/*.js',
+        'spec/*.js',
         'modular/*.js'
       ],
-      tasks: 'concat lint'
+      tasks: 'concat lint buster'
     },
     
     // JSHint options
@@ -94,12 +96,24 @@ module.exports = function(grunt) {
         eqnull: true,
         shadow: true
       },
-      globals: {}
+      globals: {
+        JSBN: true,
+        
+        // BusterJS
+        buster: true,
+        describe: true,
+        it: true,
+        before: true,
+        expect: true
+      }
     },
     uglify: {}
   });
   
+  grunt.loadTasks('tasks');
+  
   grunt.registerTask('default', 'watch');
   grunt.registerTask('release', 'concat lint min');
+  grunt.registerTask('test', 'concat lint buster');
 
 };
