@@ -3,9 +3,9 @@ module.exports = function(grunt) {
 
   // JSBN configuration
   grunt.initConfig({
-    
+
     meta: {
-      
+
       // Banner prepended to distribution
       banner: '/**\n' +
               ' * Copyright (c) 2003-2005 Tom Wu <tjw@cs.Stanford.EDU>\n' +
@@ -24,8 +24,8 @@ module.exports = function(grunt) {
               ' * The above copyright notice and this permission notice shall be\n' +
               ' * included in all copies or substantial portions of the Software.\n' +
               ' *\n' +
-              ' * THE SOFTWARE IS PROVIDED "AS-IS" AND WITHOUT WARRANTY OF ANY KIND, \n' +
-              ' * EXPRESS, IMPLIED OR OTHERWISE, INCLUDING WITHOUT LIMITATION, ANY \n' +
+              ' * THE SOFTWARE IS PROVIDED "AS-IS" AND WITHOUT WARRANTY OF ANY KIND,\n' +
+              ' * EXPRESS, IMPLIED OR OTHERWISE, INCLUDING WITHOUT LIMITATION, ANY\n' +
               ' * WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.\n' +
               ' *\n' +
               ' * IN NO EVENT SHALL TOM WU BE LIABLE FOR ANY SPECIAL, INCIDENTAL,\n' +
@@ -40,7 +40,7 @@ module.exports = function(grunt) {
               ' * and disclaimer.\n' +
               ' */'
     },
-    
+
     // Lints Grunt-file and library itself
     lint: {
       files: [
@@ -49,7 +49,7 @@ module.exports = function(grunt) {
         'dist/jsbn.js'
       ]
     },
-    
+
     // Concatenate library
     concat: {
       dist: {
@@ -62,7 +62,7 @@ module.exports = function(grunt) {
         dest: 'dist/jsbn.js'
       }
     },
-    
+
     // Minified distribution
     min: {
       dist: {
@@ -70,7 +70,7 @@ module.exports = function(grunt) {
         dest: 'dist/jsbn.min.js'
       }
     },
-    
+
     // Watch for changes to library
     watch: {
       files: [
@@ -80,7 +80,7 @@ module.exports = function(grunt) {
       ],
       tasks: 'concat lint buster'
     },
-    
+
     // JSHint options
     jshint: {
       options: {
@@ -98,7 +98,7 @@ module.exports = function(grunt) {
       },
       globals: {
         JSBN: true,
-        
+
         // BusterJS
         buster: true,
         describe: true,
@@ -109,9 +109,9 @@ module.exports = function(grunt) {
     },
     uglify: {}
   });
-  
+
   grunt.loadTasks('tasks');
-  
+
   grunt.registerTask('default', 'watch');
   grunt.registerTask('release', 'concat lint min');
   grunt.registerTask('test', 'concat lint buster');

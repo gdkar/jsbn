@@ -15,8 +15,8 @@
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
  *
- * THE SOFTWARE IS PROVIDED "AS-IS" AND WITHOUT WARRANTY OF ANY KIND, 
- * EXPRESS, IMPLIED OR OTHERWISE, INCLUDING WITHOUT LIMITATION, ANY 
+ * THE SOFTWARE IS PROVIDED "AS-IS" AND WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS, IMPLIED OR OTHERWISE, INCLUDING WITHOUT LIMITATION, ANY
  * WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
  *
  * IN NO EVENT SHALL TOM WU BE LIABLE FOR ANY SPECIAL, INCIDENTAL,
@@ -1774,7 +1774,7 @@ if(rng_pool == null) {
     var z = global.crypto.random(32);
     for(t = 0; t < z.length; ++t)
       rng_pool[rng_pptr++] = z.charCodeAt(t) & 255;
-  }  
+  }
   while(rng_pptr < rng_psize) {  // extract some randomness from Math.random()
     t = Math.floor(65536 * Math.random());
     rng_pool[rng_pptr++] = t >>> 8;
@@ -2584,10 +2584,10 @@ function bit_rol(num, cnt)
   return (num << cnt) | (num >>> (32 - cnt));
 }
 
-    
+
     // Hooks
     BigInteger.fromInt = nbv;
-    
+
     // JSBN API
     return {
         crypto: {

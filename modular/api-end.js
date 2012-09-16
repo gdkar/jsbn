@@ -1,7 +1,7 @@
-    
+
     // Hooks
     BigInteger.fromInt = nbv;
-    
+
     // JSBN API
     return {
         crypto: {
