@@ -2,7 +2,7 @@ buster.spec.expose();
 
 describe('BigInteger', function() {
 
-  var BigInteger = JSBN.math.BigInteger;
+  var BigInteger = JSBN.Math.BigInteger;
 
   it('can execute common mathematical operations', function() {
     var a = BigInteger.fromInt(25);

@@ -2,7 +2,7 @@ buster.spec.expose();
 
 describe('RSA', function() {
 
-  var RSAKey = JSBN.crypto.rsa.RSAKey;
+  var RSAKey = JSBN.Crypto.RSA.RSAKey;
 
   it('succeeds simple test', function() {
     var N = 'C4E3F7212602E1E396C0B6623CF11D26204ACE3E7D26685E037AD2507DCE82FC' +

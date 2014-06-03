@@ -2,7 +2,7 @@ buster.spec.expose();
 
 describe('Base64', function() {
 
-  var base64 = JSBN.util.base64;
+  var base64 = JSBN.Util.Base64;
 
   it('can be generated from hex', function() {
     expect(base64.fromHex('4a53424e')).toEqual('SlNCTg==');

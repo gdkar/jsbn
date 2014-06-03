@@ -2,7 +2,7 @@ buster.spec.expose();
 
 describe('ARC4', function() {
 
-  var ARC4 = JSBN.crypto.prng.ARC4;
+  var ARC4 = JSBN.Crypto.PRNG.ARC4;
 
   it('can encrypt/decrypt data', function() {
     var encrypter = new ARC4();

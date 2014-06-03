@@ -2590,41 +2590,41 @@ function bit_rol(num, cnt)
 
   // JSBN API
   return {
-    crypto: {
-      ec: {
+    Crypto: {
+      EC: {
         ECFieldElementFp: ECFieldElementFp,
         ECPointFp: ECPointFp,
         ECCurveFp: ECCurveFp
       },
-      sec: {
-        byName: getSECCurveByName,
-        X9ECParameters: X9ECParameters
-      },
-      hash: {
-        hmac: {
-          sha1: {
+      Hash: {
+        HMAC: {
+          SHA1: {
             fromStrings: hex_hmac_sha1,
             fromArrays: ba_hmac_sha1
           }
         },
-        sha1: {
+        SHA1: {
           fromString: hex_sha1,
           fromArray: ba_sha1
         }
       },
-      prng: {
+      PRNG: {
         ARC4: Arcfour,
         SecureRandom: SecureRandom
       },
-      rsa: {
+      RSA: {
         RSAKey: RSAKey
+      },
+      SEC: {
+        byName: getSECCurveByName,
+        X9ECParameters: X9ECParameters
       }
     },
-    math: {
+    Math: {
       BigInteger: BigInteger
     },
-    util: {
-      base64: {
+    Util: {
+      Base64: {
         fromHex: hex2b64,
         toHex: b64tohex,
         toByteArray: b64toBA

@@ -2,8 +2,8 @@ buster.spec.expose();
 
 describe('SHA-1', function() {
 
-  var sha1 = JSBN.crypto.hash.sha1;
-  var hmac = JSBN.crypto.hash.hmac.sha1;
+  var sha1 = JSBN.Crypto.Hash.SHA1;
+  var hmac = JSBN.Crypto.Hash.HMAC.SHA1;
 
   it('can calculate digests from strings', function() {
     expect(sha1.fromString('')).toEqual('da39a3ee5e6b4b0d3255bfef95601890afd80709');
