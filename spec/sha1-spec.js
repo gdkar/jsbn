@@ -1,4 +1,3 @@
-
 buster.spec.expose();
 
 describe('SHA-1', function() {

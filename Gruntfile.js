@@ -1,12 +1,11 @@
-/*global module:false*/
 module.exports = function(grunt) {
 
   // JSBN configuration
   grunt.initConfig({
+    pkg: grunt.file.readJSON('package.json'),
 
+    // Metadata
     meta: {
-
-      // Banner prepended to distribution
       banner: '/**\n' +
               ' * Copyright (c) 2003-2005 Tom Wu <tjw@cs.Stanford.EDU>\n' +
               ' * All Rights Reserved.\n' +
@@ -38,82 +37,79 @@ module.exports = function(grunt) {
               ' *\n' +
               ' * All redistributions must retain an intact copy of this copyright notice\n' +
               ' * and disclaimer.\n' +
-              ' */'
+              ' */\n\n'
     },
 
-    // Lints Grunt-file and library itself
-    lint: {
-      files: [
-        'grunt.js',
-        'spec/*-test.js',
-        'dist/jsbn.js'
-      ]
+    // BusterJS specs
+    buster: {
+      spec: {
+        test: {
+          reporter: 'specification'
+        }
+      }
     },
 
-    // Concatenate library
+    // Concatenates release files
     concat: {
+      options: {
+        banner: '<%= meta.banner %>'
+      },
       dist: {
         src: [
-          '<banner:meta.banner>',
           'modular/api-begin.js',
           'src/*.js',
           'modular/api-end.js'
         ],
-        dest: 'dist/jsbn.js'
+        dest: 'dist/<%= pkg.name %>.js'
       }
+    },
+
+    // Lints project files using JSHint
+    jshint: {
+      options: {
+        jshintrc: true
+      },
+      all: [
+        'Gruntfile.js',
+        '<%= concat.dist.dest %>',
+        'spec/*.js'
+      ]
     },
 
     // Minified distribution
-    min: {
-      dist: {
-        src: ['<banner:meta.banner>', '<config:concat.dist.dest>'],
-        dest: 'dist/jsbn.min.js'
-      }
-    },
-
-    // Watch for changes to library
-    watch: {
-      files: [
-        'src/*.js',
-        'spec/*.js',
-        'modular/*.js'
-      ],
-      tasks: 'concat lint buster'
-    },
-
-    // JSHint options
-    jshint: {
+    uglify: {
       options: {
-        curly: false,
-        eqeqeq: true,
-        immed: true,
-        latedef: true,
-        newcap: true,
-        noarg: true,
-        sub: true,
-        undef: true,
-        boss: true,
-        eqnull: true,
-        shadow: true
+        banner: '<%= meta.banner %>'
       },
-      globals: {
-        JSBN: true,
-
-        // BusterJS
-        buster: true,
-        describe: true,
-        it: true,
-        before: true,
-        expect: true
+      dist: {
+        src: ['<%= concat.dist.dest %>'],
+        dest: 'dist/<%= pkg.name %>.min.js'
       }
     },
-    uglify: {}
+
+    // Watch for file changes
+    watch: {
+      options: {
+        atBegin: true
+      },
+      files: [
+        'Gruntfile.js',
+        'src/*.js',
+        'modular/*.js',
+        'spec/*.js'
+      ],
+      tasks: ['spec']
+    }
   });
 
-  grunt.loadTasks('tasks');
+  grunt.loadNpmTasks('grunt-buster');
+  grunt.loadNpmTasks('grunt-contrib-concat');
+  grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.loadNpmTasks('grunt-contrib-watch');
 
-  grunt.registerTask('default', 'watch');
-  grunt.registerTask('release', 'concat lint min');
-  grunt.registerTask('test', 'concat lint buster');
-
+  grunt.registerTask('default', ['watch']);
+  grunt.registerTask('build',   ['concat', 'jshint']);
+  grunt.registerTask('spec',    ['build', 'buster::test']);
+  grunt.registerTask('release', ['spec', 'uglify']);
 };

@@ -1,12 +1,15 @@
 var config = module.exports;
 
-config['JSBN tests'] = {
+config['JSBN specs'] = {
   env: 'browser',
   rootPath: '../',
   sources: [
     'dist/jsbn.js'
   ],
   specs: [
-    'spec/*-test.js'
+    'spec/*-spec.js'
+  ],
+  specHelpers: [
+    'spec/helper.js'
   ]
 };
