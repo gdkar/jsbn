@@ -10,7 +10,7 @@ Advantages over Tom Wu's [original implementation](http://www-cs-students.stanfo
 
 * A top-level module to prevent polluting the global scope
 * Unit tests
-* JSLint compliance
+* JSHint compliance
 * A distributable, minified and production-ready library
 
 Licensed under the **BSD** license, see LICENSE for more information.
