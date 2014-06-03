@@ -2,7 +2,7 @@
 
 Licensed under the **BSD** license
 
-> Copyright (c) 2003-2005  Tom Wu  
+> Copyright (c) 2003-2005  Tom Wu
 > All Rights Reserved.
 >
 > Permission is hereby granted, free of charge, to any person obtaining
@@ -34,5 +34,5 @@ Licensed under the **BSD** license
 
 Address all questions regarding this license to:
 
->  Tom Wu  
+>  Tom Wu
 >  tjw@cs.Stanford.EDU
