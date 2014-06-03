@@ -8,7 +8,7 @@ describe('BigInteger', function() {
     var a = BigInteger.fromInt(25);
     var b = BigInteger.fromInt(1002);
 
-    expect(a.add(b).valueOf()).toEqual(1027);
+    expect(a.add(b).intValue()).toEqual(1027);
 
     var p = new BigInteger('e564d8b801a61f47', 16, true);
     var xp = new BigInteger('99246db2a3507fa', 16, true);
@@ -29,7 +29,7 @@ describe('BigInteger', function() {
     expect(c.equals(d)).toBeTrue();
 
     a = BigInteger.fromInt(-13);
-    expect(a.valueOf()).toEqual(-13);
+    expect(a.intValue()).toEqual(-13);
   });
 
   it('can be compared', function() {
