@@ -1,6 +1,6 @@
 # JavaScript BigNum library
 
-[![Version 1.3.2](https://img.shields.io/badge/version-1.3.2-blue.svg)](https://github.com/timkurvers/jsbn)
+[![Version 1.3.2](https://img.shields.io/badge/version-1.3.2-blue.svg)](https://github.com/timkurvers/jsbn/tree/v1.3.2)
 [![Build Status](https://img.shields.io/travis/timkurvers/jsbn.svg)](https://travis-ci.org/timkurvers/jsbn)
 [![Dependency Status](https://img.shields.io/gemnasium/timkurvers/jsbn.svg)](https://gemnasium.com/timkurvers/jsbn)
 [![Code Climate](https://img.shields.io/codeclimate/github/timkurvers/jsbn.svg)](https://codeclimate.com/github/timkurvers/jsbn)
